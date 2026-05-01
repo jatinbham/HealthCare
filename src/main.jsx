@@ -2,6 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import HealthForm from './components/HealthForm/HealthForm'
+import Login from './components/Login/Login.jsx'
+import Signup from './components/Signup/Signup.jsx'
 
 import {
   createBrowserRouter,
@@ -32,6 +34,10 @@ const router = createBrowserRouter(
       <Route path="user/:userid" element={<User />} />
 
       <Route path='health-analysis' element={<HealthForm />} />
+
+      <Route path='login' element={<Login />} />
+
+      <Route path='signup' element={<Signup />} />
 
       <Route
          path='github' 
