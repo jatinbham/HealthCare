@@ -1,14 +1,69 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function Login() {
+
+    const navigate = useNavigate()
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
+
         e.preventDefault()
-        console.log(email, password)
+
+        try {
+
+            const response = await fetch(
+                "https://healthcare-backend-1-5jqb.onrender.com/login",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        email,
+                        password
+                    })
+                }
+            )
+
+            const data = await response.json()
+
+            console.log(data)
+
+            if (response.ok) {
+
+                localStorage.setItem(
+                    "token",
+                    data.token
+                )
+
+                localStorage.setItem(
+                    "user",
+                    JSON.stringify(data.user)
+                )
+
+                alert("Login Successful 🚀")
+
+                navigate("/dashboard")
+
+            } else {
+
+                alert(data.message)
+
+            }
+
+        } catch (error) {
+
+            console.log(error)
+
+            alert("Something went wrong")
+
+        }
+
     }
 
     return (
@@ -22,6 +77,7 @@ export default function Login() {
                     <h1 className="text-5xl lg:text-7xl font-extrabold leading-tight">
 
                         Welcome Back
+
                         <span className="block text-cyan-400">
                             Login Securely
                         </span>
@@ -80,9 +136,7 @@ export default function Login() {
                 <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 rounded-3xl p-10 shadow-2xl">
 
                     <h2 className="text-4xl font-bold text-cyan-400 mb-8 text-center">
-
                         Login
-
                     </h2>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
