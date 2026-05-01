@@ -257,7 +257,7 @@ const saveHealthProfile = async () => {
     try {
 
         await axios.post(
-            "https://your-backend-url/health-profile",
+            "https://healthcare-backend-1-5jqb.onrender.comhealth-profile",
             formData,
             {
                 headers: {
@@ -284,7 +284,7 @@ const saveHealthProfile = async () => {
         try {
 
             const res = await axios.get(
-                "https://your-backend-url/health-profile",
+                "https://healthcare-backend-1-5jqb.onrender.com/health-profile",
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
