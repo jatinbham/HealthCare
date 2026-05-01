@@ -18,6 +18,7 @@ export default function Signup() {
         })
     }
 
+    console.log("🔥 Submit function triggered")
     const handleSubmit = async (e) => {
 
         e.preventDefault()

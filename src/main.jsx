@@ -4,6 +4,8 @@ import './index.css'
 import HealthForm from './components/HealthForm/HealthForm'
 import Login from './components/Login/Login.jsx'
 import Signup from './components/Signup/Signup.jsx'
+import Dashboard from './components/Dashboard/Dashboard'
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'
 
 import {
   createBrowserRouter,
@@ -38,6 +40,15 @@ const router = createBrowserRouter(
       <Route path='login' element={<Login />} />
 
       <Route path='signup' element={<Signup />} />
+
+      <Route
+    path="dashboard"
+    element={
+        <ProtectedRoute>
+            <Dashboard />
+        </ProtectedRoute>
+    }
+/>
 
       <Route
          path='github' 
