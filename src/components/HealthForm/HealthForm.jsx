@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
-
+import axios from "axios"
 export default function HealthForm() {
+
+    const token = localStorage.getItem("token")
 
     const [formData, setFormData] = useState({
 
@@ -249,6 +251,60 @@ export default function HealthForm() {
 
 }
 
+const saveHealthProfile = async () => {
+
+    try {
+
+        await axios.post(
+            "https://your-backend-url/health-profile",
+            formData,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        )
+
+        alert("Profile Saved 🚀")
+
+    } catch (error) {
+
+        console.log(error)
+        alert("Save failed")
+
+    }
+
+}
+
+    useEffect(() => {
+
+    const fetchProfile = async () => {
+
+        try {
+
+            const res = await axios.get(
+                "https://your-backend-url/health-profile",
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            )
+
+            if (res.data.profile) {
+                setFormData(res.data.profile)
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    fetchProfile()
+
+}, [])
+
     return (
 
         <div className="min-h-screen bg-slate-950 text-white py-20 px-6">
@@ -359,6 +415,13 @@ export default function HealthForm() {
                     Analyze My Health
 
                 </button>
+
+                <button
+    onClick={saveHealthProfile}
+    className="mt-6 w-full bg-green-500 hover:bg-green-600 text-black py-4 rounded-2xl text-xl font-bold"
+>
+    Save / Update Profile
+</button>
 
                 {
 
