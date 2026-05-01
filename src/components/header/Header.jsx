@@ -83,14 +83,27 @@ export default function Header() {
 
                     </ul>
 
-                    <Link
-                        to="/health-analysis"
-                        className="bg-cyan-500 hover:bg-cyan-600 text-black px-6 py-3 rounded-2xl font-semibold transition duration-300 shadow-lg shadow-cyan-500/30"
-                    >
+                    <div className="flex items-center gap-4">
 
-                        Get Started
+                        <Link
+                            to="/login"
+                            className="border border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black px-6 py-3 rounded-2xl font-semibold transition duration-300"
+                        >
 
-                    </Link>
+                            Login
+
+                        </Link>
+
+                        <Link
+                            to="/health-analysis"
+                            className="bg-cyan-500 hover:bg-cyan-600 text-black px-6 py-3 rounded-2xl font-semibold transition duration-300 shadow-lg shadow-cyan-500/30"
+                        >
+
+                            Get Started
+
+                        </Link>
+
+                    </div>
 
                 </div>
 
