@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     LineChart,
     Line,
@@ -8,63 +8,40 @@ import {
     ResponsiveContainer,
     CartesianGrid
 } from 'recharts'
+import BASE_URL from "../../api"
 
 export default function Dashboard() {
 
+    const [profile, setProfile] = useState(null)
+
+    const token = localStorage.getItem("token")
     const user = JSON.parse(localStorage.getItem("user"))
 
     const logout = () => {
-
         localStorage.clear()
-
         window.location.href = "/login"
-
     }
 
     const healthData = [
-
-        {
-            day: "Mon",
-            score: 72
-        },
-
-        {
-            day: "Tue",
-            score: 78
-        },
-
-        {
-            day: "Wed",
-            score: 80
-        },
-
-        {
-            day: "Thu",
-            score: 85
-        },
-
-        {
-            day: "Fri",
-            score: 92
-        }
-
+        { day: "Mon", score: 72 },
+        { day: "Tue", score: 78 },
+        { day: "Wed", score: 80 },
+        { day: "Thu", score: 85 },
+        { day: "Fri", score: 92 }
     ]
-
-
 
     const getAIResponse = async () => {
 
         try {
 
             const response = await fetch(
-                "https://healthcare-backend-1-5jqb.onrender.com/ai-health",
+                `${BASE_URL}/ai-health`,
                 {
                     method: "POST",
-
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
                     },
-
                     body: JSON.stringify({
                         symptoms: "headache, stress, low sleep"
                     })
@@ -75,17 +52,39 @@ export default function Dashboard() {
 
             alert(data.reply)
 
-            console.log(data)
-
         } catch (error) {
-
-            console.log(error)
-
             alert("AI request failed")
+        }
+    }
 
+    // FETCH REAL PROFILE DATA
+    useEffect(() => {
+
+        const fetchProfile = async () => {
+
+            try {
+
+                const res = await fetch(
+                    `${BASE_URL}/health-profile`,
+                    {
+                        headers: {
+                            "Authorization": `Bearer ${token}`
+                        }
+                    }
+                )
+
+                const data = await res.json()
+
+                setProfile(data.profile)
+
+            } catch (error) {
+                console.log(error)
+            }
         }
 
-    }
+        fetchProfile()
+
+    }, [])
 
     return (
 
@@ -109,210 +108,68 @@ export default function Dashboard() {
 
                     <button
                         onClick={logout}
-                        className="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-2xl font-semibold"
+                        className="bg-red-500 px-6 py-3 rounded-2xl"
                     >
                         Logout
                     </button>
 
                 </div>
 
+                {/* REAL DATA SECTION */}
+                <div className="bg-slate-800 p-6 rounded-2xl mb-10">
 
+                    <h2 className="text-2xl text-cyan-400 mb-4">
+                        Your Health Profile (Live DB Data)
+                    </h2>
 
-                <div className="grid md:grid-cols-4 gap-8">
-
-                    <div className="bg-slate-800/50 border border-slate-700 rounded-3xl p-8">
-
-                        <h2 className="text-slate-400 text-lg">
-                            Health Score
-                        </h2>
-
-                        <p className="text-5xl font-bold text-green-400 mt-4">
-                            92%
-                        </p>
-
-                    </div>
-
-
-
-                    <div className="bg-slate-800/50 border border-slate-700 rounded-3xl p-8">
-
-                        <h2 className="text-slate-400 text-lg">
-                            Stress Level
-                        </h2>
-
-                        <p className="text-5xl font-bold text-yellow-400 mt-4">
-                            Low
-                        </p>
-
-                    </div>
-
-
-
-                    <div className="bg-slate-800/50 border border-slate-700 rounded-3xl p-8">
-
-                        <h2 className="text-slate-400 text-lg">
-                            BMI
-                        </h2>
-
-                        <p className="text-5xl font-bold text-cyan-400 mt-4">
-                            22.5
-                        </p>
-
-                    </div>
-
-
-
-                    <div className="bg-slate-800/50 border border-slate-700 rounded-3xl p-8">
-
-                        <h2 className="text-slate-400 text-lg">
-                            Sleep
-                        </h2>
-
-                        <p className="text-5xl font-bold text-pink-400 mt-4">
-                            7.5h
-                        </p>
-
-                    </div>
+                    {profile ? (
+                        <pre className="text-slate-300">
+                            {JSON.stringify(profile, null, 2)}
+                        </pre>
+                    ) : (
+                        <p>Loading profile...</p>
+                    )}
 
                 </div>
 
+                {/* GRAPH */}
+                <div className="bg-slate-800 p-8 rounded-3xl">
 
+                    <h2 className="text-3xl text-cyan-400 mb-6">
+                        Weekly Progress
+                    </h2>
 
-                <div className="bg-slate-800/50 border border-slate-700 rounded-3xl p-8 mt-12">
+                    <ResponsiveContainer width="100%" height={300}>
 
-                    <div className="flex items-center justify-between mb-8">
+                        <LineChart data={healthData}>
 
-                        <h2 className="text-3xl font-bold text-cyan-400">
-                            Weekly Health Progress
-                        </h2>
+                            <CartesianGrid />
+                            <XAxis dataKey="day" />
+                            <YAxis />
+                            <Tooltip />
 
-                        <button
-                            onClick={getAIResponse}
-                            className="bg-cyan-500 hover:bg-cyan-600 px-6 py-3 rounded-2xl font-semibold text-black"
-                        >
-                            Get AI Suggestion
-                        </button>
+                            <Line
+                                type="monotone"
+                                dataKey="score"
+                                stroke="#22d3ee"
+                                strokeWidth={3}
+                            />
 
-                    </div>
+                        </LineChart>
 
-                    <div className="w-full h-[400px]">
-
-                        <ResponsiveContainer width="100%" height="100%">
-
-                            <LineChart data={healthData}>
-
-                                <CartesianGrid strokeDasharray="3 3" />
-
-                                <XAxis dataKey="day" />
-
-                                <YAxis />
-
-                                <Tooltip />
-
-                                <Line
-                                    type="monotone"
-                                    dataKey="score"
-                                    stroke="#22d3ee"
-                                    strokeWidth={4}
-                                />
-
-                            </LineChart>
-
-                        </ResponsiveContainer>
-
-                    </div>
+                    </ResponsiveContainer>
 
                 </div>
 
-
-
-                <div className="grid lg:grid-cols-2 gap-10 mt-12">
-
-                    <div className="bg-slate-800/50 border border-slate-700 rounded-3xl p-8">
-
-                        <h2 className="text-3xl font-bold text-cyan-400 mb-6">
-                            AI Health Insights
-                        </h2>
-
-                        <div className="space-y-5">
-
-                            <div className="bg-slate-900 rounded-2xl p-5">
-
-                                <h3 className="text-xl font-semibold text-green-400">
-                                    Great Physical Health
-                                </h3>
-
-                                <p className="text-slate-300 mt-2">
-                                    Your activity and BMI are in healthy range.
-                                </p>
-
-                            </div>
-
-                            <div className="bg-slate-900 rounded-2xl p-5">
-
-                                <h3 className="text-xl font-semibold text-yellow-400">
-                                    Mild Stress Detected
-                                </h3>
-
-                                <p className="text-slate-300 mt-2">
-                                    Try meditation and proper sleep.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <div className="bg-slate-800/50 border border-slate-700 rounded-3xl p-8">
-
-                        <h2 className="text-3xl font-bold text-cyan-400 mb-6">
-                            Daily Activity
-                        </h2>
-
-                        <div className="space-y-5">
-
-                            <div className="bg-slate-900 rounded-2xl p-5 flex justify-between">
-
-                                <span>Steps Walked</span>
-
-                                <span className="text-cyan-400 font-bold">
-                                    8,240
-                                </span>
-
-                            </div>
-
-                            <div className="bg-slate-900 rounded-2xl p-5 flex justify-between">
-
-                                <span>Water Intake</span>
-
-                                <span className="text-cyan-400 font-bold">
-                                    2.5L
-                                </span>
-
-                            </div>
-
-                            <div className="bg-slate-900 rounded-2xl p-5 flex justify-between">
-
-                                <span>Calories Burned</span>
-
-                                <span className="text-cyan-400 font-bold">
-                                    520
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
+                <button
+                    onClick={getAIResponse}
+                    className="mt-10 bg-cyan-500 px-6 py-3 rounded-2xl text-black font-bold"
+                >
+                    Get AI Suggestion
+                </button>
 
             </div>
 
         </div>
-
     )
 }

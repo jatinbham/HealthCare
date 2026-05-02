@@ -256,15 +256,15 @@ const saveHealthProfile = async () => {
 
     try {
 
-        await axios.post(
-            "https://healthcare-backend-1-5jqb.onrender.comhealth-profile",
-            formData,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        )
+       await axios.post(
+    `${BASE_URL}/health-profile`,
+    formData,
+    {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+)
 
         alert("Profile Saved 🚀")
 

@@ -11,6 +11,7 @@ export default function Header() {
 
                 <div className="flex items-center justify-between">
 
+                    {/* LOGO */}
                     <Link to="/" className="flex items-center gap-3">
 
                         <div className="w-12 h-12 rounded-2xl bg-cyan-500 flex items-center justify-center shadow-lg shadow-cyan-500/40">
@@ -35,72 +36,57 @@ export default function Header() {
 
                     </Link>
 
+                    {/* NAV LINKS */}
                     <ul className="hidden lg:flex items-center gap-10 text-lg">
 
                         <li>
-
-                            <Link
-                                to="/"
-                                className="text-slate-300 hover:text-cyan-400 transition duration-300"
-                            >
+                            <Link to="/" className="text-slate-300 hover:text-cyan-400">
                                 Home
                             </Link>
-
                         </li>
 
                         <li>
-
-                            <Link
-                                to="/About"
-                                className="text-slate-300 hover:text-cyan-400 transition duration-300"
-                            >
+                            <Link to="/about" className="text-slate-300 hover:text-cyan-400">
                                 About
                             </Link>
-
                         </li>
 
                         <li>
-
-                            <Link
-                                to="/Github"
-                                className="text-slate-300 hover:text-cyan-400 transition duration-300"
-                            >
+                            <Link to="/github" className="text-slate-300 hover:text-cyan-400">
                                 Dashboard
                             </Link>
-
                         </li>
 
                         <li>
-
-                            <Link
-                                to="/Contact"
-                                className="text-slate-300 hover:text-cyan-400 transition duration-300"
-                            >
+                            <Link to="/contact" className="text-slate-300 hover:text-cyan-400">
                                 Contact
                             </Link>
+                        </li>
 
+                        {/* 🔥 STEP 6 ADDED HERE */}
+                        <li>
+                            <Link to="/history" className="text-slate-300 hover:text-cyan-400">
+                                History
+                            </Link>
                         </li>
 
                     </ul>
 
+                    {/* AUTH BUTTONS */}
                     <div className="flex items-center gap-4">
 
                         <Link
                             to="/login"
                             className="border border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black px-6 py-3 rounded-2xl font-semibold transition duration-300"
                         >
-
                             Login
-
                         </Link>
 
                         <Link
                             to="/health-analysis"
                             className="bg-cyan-500 hover:bg-cyan-600 text-black px-6 py-3 rounded-2xl font-semibold transition duration-300 shadow-lg shadow-cyan-500/30"
                         >
-
                             Get Started
-
                         </Link>
 
                     </div>

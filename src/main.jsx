@@ -6,6 +6,7 @@ import Login from './components/Login/Login.jsx'
 import Signup from './components/Signup/Signup.jsx'
 import Dashboard from './components/Dashboard/Dashboard'
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'
+import HealthHistory from './components/HealthHistory/HealthHistory.jsx'
 
 import {
   createBrowserRouter,
@@ -40,6 +41,8 @@ const router = createBrowserRouter(
       <Route path='login' element={<Login />} />
 
       <Route path='signup' element={<Signup />} />
+
+      <Route path="history" element={<HealthHistory />} />
 
       <Route
     path="dashboard"
