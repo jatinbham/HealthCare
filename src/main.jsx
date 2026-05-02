@@ -7,7 +7,7 @@ import Signup from './components/Signup/Signup.jsx'
 import Dashboard from './components/Dashboard/Dashboard'
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'
 import HealthHistory from './components/HealthHistory/HealthHistory.jsx'
-import AnalyzeHealth from "./components/AnalyzeHealth";
+import AnalyzeHealth from "./components/AnalyzeHealth.jsx";
 
 import {
   createBrowserRouter,
