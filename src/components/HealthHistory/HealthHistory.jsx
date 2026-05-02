@@ -12,7 +12,10 @@ export default function HealthHistory() {
                 setLoading(true);
                 const token = localStorage.getItem("token");
 
-                const res = await fetch(`${api.baseURL}/health-history`, {
+                // Check if baseURL ends with / to avoid double slashes
+                const baseUrl = api.baseURL.endsWith('/') ? api.baseURL.slice(0, -1) : api.baseURL;
+
+                const res = await fetch(`${baseUrl}/health-history`, {
                     method: "GET",
                     headers: {
                         "Authorization": `Bearer ${token}`,
@@ -23,13 +26,17 @@ export default function HealthHistory() {
                 if (!res.ok) throw new Error("Failed to fetch history");
 
                 const data = await res.json();
-                // Sorting reports to show latest first
-                const sortedData = (data.reports || data).sort((a, b) => 
-                    new Date(b.date) - new Date(a.date)
+                
+                // Backend se data.reports aa raha hai. Use createdAt for accurate sorting.
+                const rawReports = data.reports || [];
+                const sortedData = rawReports.sort((a, b) => 
+                    new Date(b.createdAt) - new Date(a.createdAt)
                 );
+                
                 setReports(sortedData);
 
             } catch (err) {
+                console.error("Fetch Error:", err);
                 setError("Unable to sync with health database. Please refresh.");
             } finally {
                 setLoading(false);
@@ -53,6 +60,7 @@ export default function HealthHistory() {
     return (
         <div className="min-h-screen bg-[#020617] text-white py-20 px-6">
             <div className="max-w-4xl mx-auto">
+                {/* Header Section */}
                 <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
                     <div>
                         <div className="inline-block px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-4">
@@ -76,39 +84,47 @@ export default function HealthHistory() {
                         <p className="text-slate-500 mt-2">Generate your first report in the Health Form section.</p>
                     </div>
                 ) : (
+                    /* Timeline Section */
                     <div className="relative space-y-12 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-800 before:to-transparent">
                         {reports.map((report, index) => (
-                            <div key={index} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                            <div key={report._id || index} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                                
                                 {/* Dot on timeline */}
-                                <div className="flex items-center justify-center w-10 h-10 rounded-full border border-slate-800 bg-[#020617] text-slate-300 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 absolute left-0 md:left-1/2 -translate-x-1/2">
+                                <div className="flex items-center justify-center w-10 h-10 rounded-full border border-slate-800 bg-[#020617] text-slate-300 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 absolute left-0 md:left-1/2 -translate-x-1/2 z-10">
                                     <div className="w-2 h-2 rounded-full bg-cyan-500 group-hover:scale-150 transition-transform" />
                                 </div>
 
                                 {/* Content Card */}
-                                <div className="w-[calc(100%-4rem)] md:w-[45%] bg-slate-900/40 backdrop-blur-sm border border-white/5 p-8 rounded-[2rem] hover:border-cyan-500/30 transition-all duration-500">
+                                <div className="w-[calc(100%-4rem)] md:w-[45%] bg-slate-900/40 backdrop-blur-sm border border-white/5 p-8 rounded-[2rem] hover:border-cyan-500/30 transition-all duration-500 shadow-xl">
                                     <div className="flex justify-between items-center mb-6">
                                         <time className="text-[10px] font-black uppercase tracking-widest text-cyan-500">
-                                            {new Date(report.date || Date.now()).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                            {new Date(report.createdAt).toLocaleDateString('en-IN', { 
+                                                day: '2-digit', 
+                                                month: 'short', 
+                                                year: 'numeric' 
+                                            })}
                                         </time>
-                                        <span className="px-3 py-1 rounded-md bg-white/5 text-[10px] font-bold text-slate-400">REPORT #{reports.length - index}</span>
+                                        <span className="px-3 py-1 rounded-md bg-white/5 text-[10px] font-bold text-slate-400">
+                                            ASSESSMENT #{reports.length - index}
+                                        </span>
                                     </div>
 
                                     <div className="space-y-6">
                                         <div>
-                                            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-tighter mb-2">Patient Input</h3>
+                                            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-tighter mb-2">Symptoms Reported</h3>
                                             <p className="text-slate-200 text-sm leading-relaxed italic">
-                                                "{report.symptoms || "Regular Checkup"}"
+                                                "{report.symptoms || "General health data update"}"
                                             </p>
                                         </div>
 
                                         <div className="pt-6 border-t border-slate-800/50">
                                             <h3 className="text-xs font-bold text-green-500 uppercase tracking-tighter mb-3 flex items-center gap-2">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                                                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
                                                 AI Diagnostic Response
                                             </h3>
-                                            <p className="text-slate-400 text-sm leading-relaxed whitespace-pre-line">
-                                                {report.aiResponse || report.reply}
-                                            </p>
+                                            <div className="text-slate-400 text-sm leading-relaxed whitespace-pre-line bg-black/20 p-4 rounded-xl border border-white/5">
+                                                {report.aiResponse || "No AI feedback available for this entry."}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
