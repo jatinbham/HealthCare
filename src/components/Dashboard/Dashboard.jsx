@@ -8,7 +8,7 @@ import {
     ResponsiveContainer,
     CartesianGrid
 } from 'recharts'
-import BASE_URL from "../api"
+import BASE_URL from "../../api.js"
 export default function Dashboard() {
 
     const [profile, setProfile] = useState(null)
