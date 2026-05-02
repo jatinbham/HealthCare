@@ -5,6 +5,7 @@ import Login from './components/Login/Login';
 import Signup from './components/Signup/Signup';
 import Dashboard from './components/Dashboard/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
+import AnalyzeHealth from "./components/AnalyzeHealth/AnalyzeHealth";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             } 
           />
           {/* Aur routes yaha add karte jaana */}
+          <Route path="/analyze" element={<AnalyzeHealth />} />
         </Route>
       </Routes>
     </Router>
