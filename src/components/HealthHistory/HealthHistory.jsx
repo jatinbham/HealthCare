@@ -7,43 +7,38 @@ export default function HealthHistory() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchHistory = async () => {
-            try {
-                setLoading(true);
-                const token = localStorage.getItem("token");
+       const fetchHistory = async () => {
+    try {
+        setLoading(true);
+        const token = localStorage.getItem("token");
 
-                // API URL handle karein (baseUrl ke end mein slash ki dikkat na ho)
-                const baseUrl = api.baseURL.endsWith('/') ? api.baseURL.slice(0, -1) : api.baseURL;
+        // 1. Pehle check karo ki api aur baseURL exist karte hain ya nahi
+        // Agar nahi hain, toh direct fallback URL use kar lo
+        const rawBaseUrl = api?.baseURL || "https://healthcareb.onrender.com";
+        
+        // 2. Ab endsWith safe hai kyunki humne upar check kar liya hai
+        const baseUrl = rawBaseUrl.endsWith('/') ? rawBaseUrl.slice(0, -1) : rawBaseUrl;
 
-                const res = await fetch(`${baseUrl}/health-history`, {
-                    method: "GET",
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                        "Content-Type": "application/json"
-                    }
-                });
-
-                if (!res.ok) throw new Error("Failed to fetch history");
-
-                const data = await res.json();
-                
-                // Backend se 'reports' naam ka array mil raha hai
-                const rawReports = data.reports || [];
-                
-                // Latest first dikhane ke liye sorting
-                const sortedData = rawReports.sort((a, b) => 
-                    new Date(b.createdAt) - new Date(a.createdAt)
-                );
-                
-                setReports(sortedData);
-
-            } catch (err) {
-                console.error("Fetch Error:", err);
-                setError("Unable to sync with health database. Please refresh.");
-            } finally {
-                setLoading(false);
+        const res = await fetch(`${baseUrl}/health-history`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
             }
-        };
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch history");
+
+        const data = await res.json();
+        setReports(data.reports || []);
+
+    } catch (err) {
+        console.error("Fetch Error:", err);
+        setError("Unable to sync with health database. Please refresh.");
+    } finally {
+        setLoading(false);
+    }
+};
 
         fetchHistory();
     }, []);
