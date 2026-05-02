@@ -7,6 +7,7 @@ import Signup from './components/Signup/Signup.jsx'
 import Dashboard from './components/Dashboard/Dashboard'
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'
 import HealthHistory from './components/HealthHistory/HealthHistory.jsx'
+import AnalyzeHealth from "./pages/AnalyzeHealth";
 
 import {
   createBrowserRouter,
@@ -43,6 +44,8 @@ const router = createBrowserRouter(
       <Route path='signup' element={<Signup />} />
 
       <Route path="history" element={<HealthHistory />} />
+
+      <Route path="/analyze" element={<AnalyzeHealth />} />
 
       <Route
     path="dashboard"
