@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import BASE_URL from '../../api'
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import BASE_URL from '../../api';
 
 export default function Signup() {
 
@@ -9,27 +9,39 @@ export default function Signup() {
         email: '',
         password: '',
         confirmPassword: ''
-    })
+    });
+
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
-        })
-    }
+        });
+    };
 
-    console.log("🔥 Submit function triggered")
     const handleSubmit = async (e) => {
+        e.preventDefault();
 
-        e.preventDefault()
-
-        if (formData.password !== formData.confirmPassword) {
-            alert("Passwords do not match")
-            return
+        // Basic Validation
+        if (!formData.name || !formData.email || !formData.password) {
+            alert("All fields are required");
+            return;
         }
 
-        try {
+        if (formData.password !== formData.confirmPassword) {
+            alert("Passwords do not match!");
+            return;
+        }
 
+        if (formData.password.length < 6) {
+            alert("Password must be at least 6 characters long");
+            return;
+        }
+
+        setLoading(true);
+
+        try {
             const response = await fetch(`${BASE_URL}/signup`, {
                 method: 'POST',
                 headers: {
@@ -40,67 +52,60 @@ export default function Signup() {
                     email: formData.email,
                     password: formData.password
                 })
-            })
+            });
 
-            const data = await response.json()
-            console.log("Response:", data)
+            const data = await response.json();
 
             if (response.ok) {
-                alert("Account Created Successfully 🚀")
+                alert("Account Created Successfully! 🎉");
+                // Form reset
                 setFormData({
                     name: '',
                     email: '',
                     password: '',
                     confirmPassword: ''
-                })
+                });
             } else {
-                alert(data.error || "Signup failed")
+                alert(data.error || data.message || "Signup failed");
             }
-
         } catch (error) {
-            console.log("Error:", error)
-            alert("Something went wrong")
+            console.error(error);
+            alert("Something went wrong. Please try again.");
+        } finally {
+            setLoading(false);
         }
-
-    }
+    };
 
     return (
-
-        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-cyan-950 to-slate-900 text-white flex items-center justify-center px-6">
-
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-cyan-950 to-slate-900 text-white flex items-center justify-center px-6 py-12">
             <div className="grid lg:grid-cols-2 gap-14 items-center max-w-7xl w-full">
 
+                {/* Left Side */}
                 <div>
-
-                    <h1 className="text-5xl lg:text-7xl font-extrabold leading-tight">
+                    <h1 className="text-5xl lg:text-6xl font-extrabold leading-tight">
                         Join The Future
-                        <span className="block text-cyan-400">
-                            Of Healthcare
-                        </span>
+                        <span className="block text-cyan-400">Of Healthcare</span>
                     </h1>
 
-                    <p className="mt-8 text-lg text-slate-300 leading-8">
-                        Create your account and start tracking your health
-                        with AI-powered monitoring and predictive analysis.
+                    <p className="mt-8 text-lg text-slate-300 leading-relaxed">
+                        Create your account and start your journey towards better health with 
+                        AI-powered insights and predictions.
                     </p>
-
                 </div>
 
-                <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 rounded-3xl p-10 shadow-2xl">
-
-                    <h2 className="text-4xl font-bold text-cyan-400 mb-8 text-center">
-                        Create Account
-                    </h2>
+                {/* Signup Form */}
+                <div className="bg-slate-800/60 backdrop-blur-xl border border-slate-700 rounded-3xl p-10 shadow-2xl">
+                    <h2 className="text-4xl font-bold text-cyan-400 mb-8 text-center">Create Account</h2>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
-
                         <input
                             type="text"
                             name="name"
                             placeholder="Full Name"
                             value={formData.name}
                             onChange={handleChange}
-                            className="w-full bg-slate-900 border border-slate-700 rounded-2xl px-5 py-4 text-white outline-none focus:border-cyan-400"
+                            required
+                            className="w-full bg-slate-900 border border-slate-700 rounded-2xl px-5 py-4 outline-none focus:border-cyan-400 transition"
                         />
 
                         <input
@@ -109,16 +114,18 @@ export default function Signup() {
                             placeholder="Email Address"
                             value={formData.email}
                             onChange={handleChange}
-                            className="w-full bg-slate-900 border border-slate-700 rounded-2xl px-5 py-4 text-white outline-none focus:border-cyan-400"
+                            required
+                            className="w-full bg-slate-900 border border-slate-700 rounded-2xl px-5 py-4 outline-none focus:border-cyan-400 transition"
                         />
 
                         <input
                             type="password"
                             name="password"
-                            placeholder="Password"
+                            placeholder="Password (min 6 characters)"
                             value={formData.password}
                             onChange={handleChange}
-                            className="w-full bg-slate-900 border border-slate-700 rounded-2xl px-5 py-4 text-white outline-none focus:border-cyan-400"
+                            required
+                            className="w-full bg-slate-900 border border-slate-700 rounded-2xl px-5 py-4 outline-none focus:border-cyan-400 transition"
                         />
 
                         <input
@@ -127,29 +134,27 @@ export default function Signup() {
                             placeholder="Confirm Password"
                             value={formData.confirmPassword}
                             onChange={handleChange}
-                            className="w-full bg-slate-900 border border-slate-700 rounded-2xl px-5 py-4 text-white outline-none focus:border-cyan-400"
+                            required
+                            className="w-full bg-slate-900 border border-slate-700 rounded-2xl px-5 py-4 outline-none focus:border-cyan-400 transition"
                         />
 
                         <button
                             type="submit"
-                            className="w-full bg-cyan-500 hover:bg-cyan-600 py-4 rounded-2xl font-semibold text-lg text-black"
+                            disabled={loading}
+                            className="w-full bg-cyan-500 hover:bg-cyan-600 disabled:bg-cyan-700 py-4 rounded-2xl font-semibold text-lg text-black transition disabled:cursor-not-allowed"
                         >
-                            Create Account
+                            {loading ? "Creating Account..." : "Create Account"}
                         </button>
-
                     </form>
 
                     <p className="text-center text-slate-400 mt-8">
-                        Already have an account?
-                        <Link to="/login" className="text-cyan-400 ml-2">
-                            Login
+                        Already have an account?{' '}
+                        <Link to="/login" className="text-cyan-400 hover:text-cyan-300 font-medium">
+                            Login here
                         </Link>
                     </p>
-
                 </div>
-
             </div>
-
         </div>
-    )
+    );
 }
