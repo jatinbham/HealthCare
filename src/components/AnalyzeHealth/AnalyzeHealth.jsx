@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import api from "../api"; // Path check kar lena apne hisaab se
+import BASE_URL from "../../api"; // Path check kar lena apne hisaab se
 
 const AnalyzeHealth = () => {
     const [symptoms, setSymptoms] = useState("");

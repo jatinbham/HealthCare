@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import api from "../../api";
+import BASE_URL from "../../api";
 
 export default function HealthHistory() {
     const [reports, setReports] = useState([]);
