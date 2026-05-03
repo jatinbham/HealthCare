@@ -7,7 +7,8 @@ import Signup from './components/Signup/Signup.jsx'
 import Dashboard from './components/Dashboard/Dashboard'
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'
 import HealthHistory from './components/HealthHistory/HealthHistory.jsx'
-import AnalyzeHealth from './components/AnalyzeHealth/AnalyzeHealth.jsx';
+// 1. ISKO CHANGE KAR: AnalyzeHealth ki jagah CyberpunkLab import kar
+import CyberpunkLab from './components/CyberpunkLab/CyberpunkLab.jsx'; 
 
 import {
   createBrowserRouter,
@@ -24,55 +25,42 @@ import User from './components/User/User.jsx'
 import Github from './components/Github/Github.jsx'
 
 const router = createBrowserRouter(
-
   createRoutesFromElements(
-
     <Route path="/" element={<Layout />}>
-
       <Route index element={<Home />} />
-
       <Route path="about" element={<About />} />
-
       <Route path="contact" element={<Contact />} />
-
       <Route path="user/:userid" element={<User />} />
-
       <Route path='health-analysis' element={<HealthForm />} />
-
       <Route path='login' element={<Login />} />
-
       <Route path='signup' element={<Signup />} />
-
       <Route path="history" element={<HealthHistory />} />
-
-      <Route path="/analyze" element={<AnalyzeHealth />} />
-
-      <Route
-    path="dashboard"
-    element={
-        <ProtectedRoute>
-            <Dashboard />
-        </ProtectedRoute>
-    }
-/>
-
-      <Route
-         path='github' 
-         element={<Github />}
+      
+      {/* 2. UPDATE ROUTE: Yahan AnalyzeHealth hata kar CyberpunkLab daal de */}
+      <Route 
+        path="analyze" 
+        element={
+            <ProtectedRoute>
+                <CyberpunkLab />
+            </ProtectedRoute>
+        } 
       />
 
+      <Route
+        path="dashboard"
+        element={
+            <ProtectedRoute>
+                <Dashboard />
+            </ProtectedRoute>
+        }
+      />
+      <Route path='github' element={<Github />} />
     </Route>
-
   )
-
 )
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-
   <React.StrictMode>
-
     <RouterProvider router={router} />
-
   </React.StrictMode>
-
 )
